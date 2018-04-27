@@ -22,17 +22,28 @@ Route::get('/home', 'HomeController@index')->name('home');
 /*
 * Admin Routes
 */
-
+// Admin Home
 Route::get('admin/home','AdminController@index');
+Route::group(['middleware'=>'guest:admin','prefix'=>'admin','namespace'=>'Admin'],function(){
 
-Route::get('admin/login','Admin\LoginController@showLoginForm')->name('admin.login');
-Route::post('admin/login','Admin\LoginController@login');
-Route::post('admin/logout','Admin\LoginController@logout')->name('admin.logout');
-Route::post('admin-password/email','Admin\ForgotPasswordController@sendResetLinkEmail')->name('admin.password.email');
-Route::get('admin-password/reset','Admin\ForgotPasswordController@showLinkRequestForm')->name('admin.password.request');
-Route::post('admin-password/reset','Admin\ResetPasswordController@reset');
-Route::get('admin-password/reset/{token}','Admin\ResetPasswordController@showResetForm')->name('admin.password.reset');
-Route::get('admin/register','Admin\RegisterController@showRegistrationForm')->name('admin.register');
-Route::post('admin/register','Admin\RegisterController@register');
+	//Admin Login and Logout 
+	Route::get('login','LoginController@showLoginForm')->name('admin.login');
+	Route::post('login','LoginController@login');
+	Route::post('logout','LoginController@logout')->name('admin.logout');
 
+	// Admin Register
+	Route::get('register','RegisterController@showRegistrationForm')->name('admin.register');
+	Route::post('register','RegisterController@register');
+
+	// Admin Reset Password
+	Route::post('reset/email','ForgotPasswordController@sendResetLinkEmail')->name('admin.password.email');
+	Route::get('reset/password','ForgotPasswordController@showLinkRequestForm')->name('admin.password.request');
+	Route::post('reset/password','ResetPasswordController@reset');
+	Route::get('reset/password/{token}','ResetPasswordController@showResetForm')->name('admin.password.reset');
+});
+
+
+// Admin Verify Account
 Route::get('verify/{email}/{verify_token}','Admin\RegisterController@verifyRegistrationEmail')->name('verifyEmail');
+
+Route::get('admin/subscriber','SubscriberController@index');
